@@ -7,6 +7,10 @@ var _ver = keyboard_check(vk_down) - keyboard_check(vk_up);
 var _viewX = camera_get_view_x(view_camera[0]);
 //cameragetX = _viewX;
 var _viewY = camera_get_view_y(view_camera[0]);
+
+global.cameraViewX = _viewX;
+global.cameraViewY = _viewY;
+
 //cameragetY = _viewY;
 var _viewW = camera_get_view_width(view_camera[0]);
 var _viewH = camera_get_view_height(view_camera[0]);
@@ -15,6 +19,9 @@ var _gotoX = x + (_hor * 150) - (_viewW * 0.5);
 //cameraGoToX = _gotoX;
 var _gotoY = y + (_ver * 100) - (_viewH * 0.5);
 //cameraGoToY = _gotoY;
+
+global.cameraGoToX = _gotoX;
+global.cameraGoToY = _gotoY;
 
 var _newX = lerp(_viewX, _gotoX, 0.1);
 
@@ -87,6 +94,10 @@ if(endgame_collision == false){
 	global.ambientShadowIntensity = 0.85;
 }
 
+if (room == Room0) {
+	global.ambientShadowIntensity = 0.75;
+}
+
 //Player Key Inputs
 key_left = keyboard_check(ord("A"));
 key_right = keyboard_check(ord("D"));
@@ -94,8 +105,14 @@ key_up = keyboard_check(ord("W"));
 key_down = keyboard_check(ord("S"));
 
 //Player Movement
-var move_horizontal = key_right - key_left;
-var move_vertical = key_down - key_up;
+if (!global.dead) {
+	move_horizontal = key_right - key_left;
+	move_vertical = key_down - key_up;
+}
+else {
+	move_horizontal = 0;
+	move_vertical = 0;
+}
 
 if(endgame_collision == false){
 	hsp = move_horizontal * walkspd;
@@ -148,11 +165,18 @@ if((place_meeting(x+hsp, y, obj_testWall)) || (place_meeting(x+hsp, y, obj_testW
 }
 else{
 	if(hsp == 0 && vsp == 0){
+		image_speed = 1;
 		sprite_index = CharStandingAnim;
 	}
 	else{
+		image_speed = 1.5;
 		sprite_index = CharWalkingAnim;
 	}
 }
 
 if(hsp != 0){image_xscale = sign(hsp)}
+
+//Monster collision
+if (place_meeting(x - (hsp*2), y - (vsp*2), obj_monster)) {
+	global.dead = true;
+}

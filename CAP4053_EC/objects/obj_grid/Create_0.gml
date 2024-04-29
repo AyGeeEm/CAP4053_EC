@@ -8,4 +8,4 @@ var vcells = room_height / cell_height;
 global.grid = mp_grid_create(0, 0, hcells, vcells, cell_width, cell_height);
 
 //Add walls as part of grid for pathfinding
-mp_grid_add_instances(global.grid, obj_testWall, false);
+mp_grid_add_instances(global.grid, obj_testWall, true);
